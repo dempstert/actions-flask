@@ -46,23 +46,22 @@ def db(app):
 
 
 @pytest.fixture(scope='function')
-def session(db):
+def session(db, app):
     """Create a new database session for a test."""
     connection = db.engine.connect()
     transaction = connection.begin()
     
-    # Use the connection for the session
-    session = db.create_scoped_session(
-        options={'bind': connection, 'binds': {}}
-    )
-    db.session = session
+    # Bind the session to the connection
+    session_options = dict(bind=connection, binds={})
+    session = db.session
+    session.configure(**session_options)
     
     yield session
     
     # Rollback transaction
+    session.close()
     transaction.rollback()
     connection.close()
-    session.remove()
 
 
 @pytest.fixture
