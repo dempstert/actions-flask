@@ -1,6 +1,6 @@
 # actions-flask
 
-A Flask application with app factory pattern, PostgreSQL database, and Docker support.
+A Flask application with an app factory, PostgreSQL database, and Docker support.
 
 ## Features
 
@@ -24,6 +24,13 @@ actions-flask/
 │   ├── conftest.py       # Pytest fixtures with testcontainers
 │   ├── test_app.py       # Route tests
 │   └── test_models.py    # Model tests
+├── alembic/              # Migrations for the standalone Example model
+├── alembic.ini           # Alembic configuration
+├── base.py               # SQLAlchemy DeclarativeBase for Example
+├── extensions.py         # Flask-SQLAlchemy extension for Example
+├── models.py             # Standalone Example model
+├── app.py                # Standalone SQLite app for Example
+├── requirements.txt      # Standalone Example dependencies
 ├── settings.py           # Configuration settings
 ├── main.py              # Application entry point
 ├── Dockerfile           # Docker image definition
@@ -122,3 +129,31 @@ Set the environment via the `FLASK_ENV` environment variable.
 - `SECRET_KEY` - Flask secret key for sessions
 - `DATABASE_URL` - PostgreSQL connection string
 - `SQL_ECHO` - Enable SQL query logging (true/false)
+
+## Standalone Alembic Example
+
+The root-level `app.py`, `models.py`, and `alembic/` provide a separate
+SQLite-backed `Example` model with Alembic migrations. They are independent of
+the PostgreSQL application in the `app/` package.
+
+Install the standalone dependencies and apply its initial migration:
+
+```bash
+pip install -r requirements.txt
+alembic upgrade head
+python app.py
+```
+
+Create and manage migrations for the `Example` model with:
+
+```bash
+alembic revision --autogenerate -m "Description of changes"
+alembic upgrade head
+alembic downgrade -1
+alembic history
+alembic current
+```
+
+The model has an integer primary key and a required 255-character description.
+Its declarative base defines naming conventions for indexes, unique and check
+constraints, foreign keys, and primary keys.
