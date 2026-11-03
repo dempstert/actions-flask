@@ -1,87 +1,6 @@
 # actions-flask
-<<<<<<< HEAD
-Run github actions w/ flask
 
-## Setup
-
-This project uses Flask with SQLAlchemy and Alembic for database migrations.
-
-### Requirements
-
-- Python 3.12+
-- See `requirements.txt` for Python package dependencies
-
-### Installation
-
-1. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-2. Run database migrations:
-```bash
-alembic upgrade head
-```
-
-3. Run the Flask application:
-```bash
-python app.py
-```
-
-## Project Structure
-
-- `requirements.txt` - Python dependencies (Flask, SQLAlchemy, Flask-SQLAlchemy, Alembic)
-- `base.py` - SQLAlchemy DeclarativeBase with metadata naming conventions
-- `extensions.py` - Flask extensions (Flask-SQLAlchemy)
-- `models.py` - Database models (Example table with id and description)
-- `app.py` - Flask application factory
-- `alembic/` - Database migration files
-- `alembic.ini` - Alembic configuration
-
-## Database Migrations
-
-This project uses Alembic for database migrations.
-
-### Create a new migration
-```bash
-alembic revision --autogenerate -m "Description of changes"
-```
-
-### Apply migrations
-```bash
-alembic upgrade head
-```
-
-### Rollback migrations
-```bash
-alembic downgrade -1
-```
-
-### View migration history
-```bash
-alembic history
-```
-
-### View current migration
-```bash
-alembic current
-```
-
-## Models
-
-The project includes an example model (`Example`) with:
-- `id` - Integer primary key
-- `description` - String(255), not null
-
-The DeclarativeBase in `base.py` includes metadata with naming conventions for:
-- Indexes: `ix_%(column_0_label)s`
-- Unique constraints: `uq_%(table_name)s_%(column_0_name)s`
-- Check constraints: `ck_%(table_name)s_%(constraint_name)s`
-- Foreign keys: `fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s`
-- Primary keys: `pk_%(table_name)s`
-=======
-
-A Flask application with app factory pattern, PostgreSQL database, and Docker support.
+A Flask application with an app factory, PostgreSQL database, and Docker support.
 
 ## Features
 
@@ -105,6 +24,13 @@ actions-flask/
 │   ├── conftest.py       # Pytest fixtures with testcontainers
 │   ├── test_app.py       # Route tests
 │   └── test_models.py    # Model tests
+├── alembic/              # Migrations for the standalone Example model
+├── alembic.ini           # Alembic configuration
+├── base.py               # SQLAlchemy DeclarativeBase for Example
+├── extensions.py         # Flask-SQLAlchemy extension for Example
+├── models.py             # Standalone Example model
+├── app.py                # Standalone SQLite app for Example
+├── requirements.txt      # Standalone Example dependencies
 ├── settings.py           # Configuration settings
 ├── main.py              # Application entry point
 ├── Dockerfile           # Docker image definition
@@ -203,4 +129,31 @@ Set the environment via the `FLASK_ENV` environment variable.
 - `SECRET_KEY` - Flask secret key for sessions
 - `DATABASE_URL` - PostgreSQL connection string
 - `SQL_ECHO` - Enable SQL query logging (true/false)
->>>>>>> origin/master
+
+## Standalone Alembic Example
+
+The root-level `app.py`, `models.py`, and `alembic/` provide a separate
+SQLite-backed `Example` model with Alembic migrations. They are independent of
+the PostgreSQL application in the `app/` package.
+
+Install the standalone dependencies and apply its initial migration:
+
+```bash
+pip install -r requirements.txt
+alembic upgrade head
+python app.py
+```
+
+Create and manage migrations for the `Example` model with:
+
+```bash
+alembic revision --autogenerate -m "Description of changes"
+alembic upgrade head
+alembic downgrade -1
+alembic history
+alembic current
+```
+
+The model has an integer primary key and a required 255-character description.
+Its declarative base defines naming conventions for indexes, unique and check
+constraints, foreign keys, and primary keys.
